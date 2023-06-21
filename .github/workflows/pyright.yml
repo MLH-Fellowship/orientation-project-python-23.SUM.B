@@ -1,4 +1,4 @@
-name: Pylint
+name: Pyright
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  linter:
+  typechecker:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Run linter
-        run: poetry run pylint $(git ls-files '*.py')
+      - name: Run type checker
+        run: poetry run pyright

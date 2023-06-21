@@ -4,23 +4,30 @@ Refer to the Fellowship LMS for information!
 
 ## Setup
 
-```
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+```bash
+poetry install
 ```
 
 ## Run
-```
+
+```bash
 flask run
 ```
 
-### Run tests
-```
+### Run Tests
+
+```bash
 pytest test_pytest.py
 ```
 
 ### Run Linter
-```
+
+```bash
 pylint *.py
+```
+
+### Run Typechecker
+
+```bash
+pyright
 ```
