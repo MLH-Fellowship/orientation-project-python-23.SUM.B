@@ -72,3 +72,24 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
+
+    # Case when using the wrong data type
+    invalid_skill_input = {
+        "name": "JavaScript",
+        "proficiency": " 2-4 years",  
+        "logo": 11
+    }
+
+    response = app.test_client().post('/resume/skill', json=invalid_skill_input)
+    assert response.status_code == 400
+    assert "Some fields have the wrong data type" in response.json['error']
+
+    incomplete_skill_input = {
+        "name": "JavaScript",
+        "proficiency": " Expert",  
+    }
+
+    response = app.test_client().post('/resume/skill', json=incomplete_skill_input)
+    assert response.status_code == 400
+    assert "Missing fields" in response.json['error']
+
