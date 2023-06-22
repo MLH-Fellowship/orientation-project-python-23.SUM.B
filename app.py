@@ -75,6 +75,30 @@ def skill():
         return jsonify({})
 
     if request.method == 'POST':
-        return jsonify({})
+        return add_skill()
 
     return jsonify({})
+
+
+
+    
+def add_skill():
+    
+    '''
+     Add a skill using POST method
+     
+    '''
+    req = request.get_json()
+
+    required_fields = {"name": str, "proficiency": str, "logo": str}
+
+    missing_fields = [field for field in required_fields if field not in req]
+    if missing_fields:
+        err_message = f"Missing required field(s): {', '.join(missing_fields)}"
+        return jsonify({"error": err_message}), 400
+
+    new_skill = Skill(req["name"], req["proficiency"], req["logo"])
+    data["skill"].append(new_skill)
+
+    return jsonify({"id": data["skill"].index(new_skill)})
+
