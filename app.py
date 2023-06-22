@@ -80,8 +80,6 @@ def skill():
     return jsonify({})
 
 
-
-    
 def add_skill():
     
     '''
@@ -90,15 +88,14 @@ def add_skill():
     '''
     req = request.get_json()
 
-    required_fields = {"name": str, "proficiency": str, "logo": str}
+    required_fields = {"name":"string", "proficiency":"string", "logo":"string"}
 
-    missing_fields = [field for field in required_fields if field not in req]
+    missing_fields = [field for field in required_fields.keys() if field not in req]
+    
     if missing_fields:
-        err_message = f"Missing required field(s): {', '.join(missing_fields)}"
-        return jsonify({"error": err_message}), 400
+        return jsonify({"error": "Missing required field(s): " + ", ".join(missing_fields)}), 400
 
     new_skill = Skill(req["name"], req["proficiency"], req["logo"])
     data["skill"].append(new_skill)
 
     return jsonify({"id": data["skill"].index(new_skill)})
-
