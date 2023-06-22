@@ -53,12 +53,10 @@ def experience():
     return jsonify({})
 
 
-
 @app.route('/resume/experience/<int:id>', methods = ['GET'])
 def get_experience(id):
     experience = data["experience"][id]
     return jsonify(experience)
-
 
 
 @app.route('/resume/education', methods=['GET', 'POST'])
