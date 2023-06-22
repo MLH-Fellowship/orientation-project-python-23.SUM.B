@@ -3,6 +3,8 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from dataclasses import fields
+
 
 app = Flask(__name__)
 
@@ -81,19 +83,18 @@ def skill():
 
 
 def add_skill():
-    
     '''
      Add a skill using POST method
-     
     '''
     req = request.get_json()
 
-    required_fields = {"name":"string", "proficiency":"string", "logo":"string"}
+    required_fields = [field.name for field in fields(Skill)]
 
-    missing_fields = [field for field in required_fields.keys() if field not in req]
-    
+    missing_fields = [field for field in required_fields if field not in req]
+
     if missing_fields:
-        return jsonify({"error": "Missing required field(s): " + ", ".join(missing_fields)}), 400
+        error_message = "Missing required field(s): " + ", ".join(missing_fields)
+        return jsonify({"error": error_message}), 400
 
     new_skill = Skill(req["name"], req["proficiency"], req["logo"])
     data["skill"].append(new_skill)
