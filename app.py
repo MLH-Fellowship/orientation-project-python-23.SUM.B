@@ -4,6 +4,7 @@
 from dataclasses import fields
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from dataclasses import fields
 
 
 app = Flask(__name__)
