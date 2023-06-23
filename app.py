@@ -60,8 +60,10 @@ def get_experience(index):
     '''
     Handle get request for a single experience
     '''
-    exp = data["experience"][index]
-    return jsonify(exp)
+    total_length = len(data['experience'])
+    if index >= 0 and index < total_length:
+        return jsonify(data["experience"][index])
+    return jsonify("Error: index input can only be 0 to " + str(total_length) + "inclusively")
 
 
 @app.route('/resume/education', methods=['GET', 'POST'])
