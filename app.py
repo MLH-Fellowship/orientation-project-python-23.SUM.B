@@ -1,8 +1,10 @@
 '''
 Flask Application
 '''
+from dataclasses import fields
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+
 
 app = Flask(__name__)
 
@@ -82,9 +84,29 @@ def skill():
     Handles Skill requests
     '''
     if request.method == 'GET':
-        return jsonify({})
+        return jsonify(data["skill"])
 
     if request.method == 'POST':
-        return jsonify({})
+        return add_skill()
 
     return jsonify({})
+
+
+def add_skill():
+    '''
+     Add a skill using POST method
+    '''
+    req = request.get_json()
+
+    required_fields = [field.name for field in fields(Skill)]
+
+    missing_fields = [field for field in required_fields if field not in req]
+
+    if missing_fields:
+        error_message = "Missing required field(s): " + ", ".join(missing_fields)
+        return jsonify({"error": error_message}), 400
+
+    new_skill = Skill(req["name"], req["proficiency"], req["logo"])
+    data["skill"].append(new_skill)
+
+    return jsonify({"id": data["skill"].index(new_skill)})
