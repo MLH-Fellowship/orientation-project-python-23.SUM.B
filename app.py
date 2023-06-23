@@ -28,7 +28,13 @@ data = {
     "skill": [
         Skill("Python",
               "1-2 Years",
-              "example-logo.png")
+              "example-logo.png"),
+        Skill("C",
+              "3-4 Years",
+              "example-logo.png"),
+        Skill("Java",
+              "2-3 Years",
+              "example-logo.png"),
     ]
 }
 
@@ -68,12 +74,18 @@ def education():
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST'])
-def skill():
+@app.route('/resume/skill/', methods=['GET', 'POST'])
+@app.route('/resume/skill/<index>', methods=['GET', 'POST'])
+def skill(index=None):
     '''
     Handles Skill requests
     '''
     if request.method == 'GET':
+        if index is not None:
+            try:
+                return jsonify(data['skill'][int(index)])
+            except IndexError:
+                return jsonify({'error': f'No skill with index {index} was found'})
         return jsonify(data["skill"])
 
     if request.method == 'POST':
