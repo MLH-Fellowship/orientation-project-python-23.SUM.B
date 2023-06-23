@@ -1,4 +1,6 @@
-
+"""
+   Flask Application
+"""
 from dataclasses import fields
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
@@ -48,9 +50,9 @@ def experience():
         return jsonify(data["experience"])
 
     if request.method == "POST":
-        experience = request.get_json()
+        new_experience = request.get_json()
         # Assuming you have a list called 'experiences' to store the experiences
-        data["experience"].append(experience)
+        data["experience"].append(new_experience)
         # Returning the index of the newly added experience
         return jsonify(len(data["experience"]) - 1)
 
@@ -73,19 +75,22 @@ def education():
 
 @app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
-    if request.method == 'GET':
+    """
+    Handles skill requests
+    """
+    if request.method == "GET":
         return jsonify(data["skill"])
 
-    if request.method == 'POST':
+    if request.method == "POST":
         return add_skill()
 
     return jsonify({})
 
 
 def add_skill():
-    '''
-     Add a skill using POST method
-    '''
+    """
+    Add a skill using POST method
+    """
     req = request.get_json()
 
     required_fields = [field.name for field in fields(Skill)]
