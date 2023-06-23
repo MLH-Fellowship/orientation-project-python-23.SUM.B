@@ -73,6 +73,15 @@ def education():
     return jsonify({})
 
 
+@app.route("/resume/education/<int:index>", methods=["GET"])
+def get_education(index):
+    """
+    Handle get request for a single experience
+    """
+    edu = data["education"][index]
+    return jsonify(edu)
+
+
 @app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
     """
