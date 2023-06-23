@@ -30,7 +30,7 @@ data = {
               "1-2 Years",
               "example-logo.png")
     ],
-    
+
     "contact": [
     ]
 }
@@ -127,9 +127,9 @@ def contact():
 
             contact = Contact(name, phone, email)
             data['contact'] = [contact]
-        return jsonify(data)    
+            
+    return jsonify(data)    
     
-    return jsonify({})
 
 
 @app.route('/resume/contact/<int:contact_id>', methods=['PUT'])
