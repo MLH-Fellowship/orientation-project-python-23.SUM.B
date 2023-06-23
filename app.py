@@ -50,11 +50,7 @@ def experience():
         return jsonify(data["experience"])
 
     if request.method == "POST":
-        new_experience = request.get_json()
-        # Assuming you have a list called 'experiences' to store the experiences
-        data["experience"].append(new_experience)
-        # Returning the index of the newly added experience
-        return jsonify(len(data["experience"]) - 1)
+        return add_experience()
 
     return jsonify({})
 
@@ -114,3 +110,30 @@ def add_skill():
     data["skill"].append(new_skill)
 
     return jsonify({"id": data["skill"].index(new_skill)})
+
+
+def add_experience():
+    """
+    Add an experience using POST method
+    """
+    req = request.get_json()
+
+    required_fields = [field.name for field in fields(Experience)]
+
+    missing_fields = [field for field in required_fields if field not in req]
+
+    if missing_fields:
+        error_message = "Missing required field(s): " + ", ".join(missing_fields)
+        return jsonify({"error": error_message}), 400
+
+    new_experience = Experience(
+        req["title"],
+        req["company"],
+        req["start_date"],
+        req["end_date"],
+        req["description"],
+        req["logo"],
+    )
+    data["experience"].append(new_experience)
+
+    return jsonify({"id": data["experience"].index(new_experience)})
