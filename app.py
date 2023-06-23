@@ -71,9 +71,9 @@ def education():
 @app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():
     '''
-    Handles Skill requests
+    Handles Skill requests()
     '''
-    if request.method == 'GET':
+    if request.method == 'GET':  
         return jsonify(data["skill"])
 
     if request.method == 'POST':
