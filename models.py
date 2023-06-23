@@ -41,3 +41,22 @@ class Skill:
     name: str
     proficiency: str
     logo: str
+
+
+class Contact:
+    '''
+    Contact Class
+    '''
+    id: int
+    name: str
+    phone: str
+    email: str
+
+    id_counter = 1
+
+    def __init__(self, name, phone, email):
+        self.id = Contact.id_counter
+        Contact.id_counter += 1
+        self.name = name
+        self.phone = phone
+        self.email = email
