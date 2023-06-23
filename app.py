@@ -68,7 +68,7 @@ def education():
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST'])
+@app.route('/resume/skill', methods=['GET', 'POST', 'DELETE'])
 def skill():
     '''
     Handles Skill requests
@@ -78,6 +78,19 @@ def skill():
 
     if request.method == 'POST':
         return add_skill()
+
+    if request.method == "DELETE":
+        skill_index = int(request.json.get("id"))
+        if 0 <= skill_index < len(data["skill"]):
+            deleted_skill = data["skill"].pop(skill_index)
+            return jsonify(
+                {
+                    "message": "Skill deleted successfully",
+                    "deleted_skill": deleted_skill.__dict__,
+                }
+            )
+
+        return jsonify({"error": "Invalid skill index"})
 
     return jsonify({})
 
