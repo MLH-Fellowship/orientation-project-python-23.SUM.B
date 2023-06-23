@@ -3,7 +3,7 @@ Flask Application
 '''
 from dataclasses import fields
 from flask import Flask, jsonify, request
-from models import Experience, Education, Skill
+from models import Experience, Education, Skill, Contact
 
 
 app = Flask(__name__)
@@ -29,6 +29,9 @@ data = {
         Skill("Python",
               "1-2 Years",
               "example-logo.png")
+    ],
+    
+    "contact": [
     ]
 }
 
@@ -100,3 +103,54 @@ def add_skill():
     data["skill"].append(new_skill)
 
     return jsonify({"id": data["skill"].index(new_skill)})
+
+
+@app.route('/resume/contact', methods=['GET', 'POST'])
+def contact():
+    '''
+    Handles Contact requests
+    '''
+    if request.method == 'GET':
+        return jsonify(data)
+
+    if request.method == 'POST':
+        api_data = request.get_json()
+
+        if api_data is not None:
+            name = api_data.get('name')
+            phone = api_data.get('phone')
+            email = api_data.get('email')
+
+            # Ensure phone number starts with +
+            if not phone.startswith('+'):
+                phone = '+' + phone
+
+            contact = Contact(name, phone, email)
+            data['contact'] = [contact]
+        return jsonify(data)    
+    
+    return jsonify({})
+
+
+@app.route('/resume/contact/<int:contact_id>', methods=['PUT'])
+def update_contact(contact_id):
+    '''
+    Update a contact with the given ID
+    '''
+    api_data = request.get_json()
+
+    if api_data is not None:
+        name = api_data.get('name')
+        phone = api_data.get('phone')
+        email = api_data.get('email')
+
+        # Get the contact with the given ID
+        contact_list = data['contact']
+        contact = [c for c in contact_list if c.id == contact_id][0]
+
+        # Update the contact
+        contact.name = name
+        contact.phone = phone
+        contact.email = email
+
+    return jsonify(data)
