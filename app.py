@@ -61,7 +61,7 @@ def get_experience(index):
     Handle get request for a single experience
     '''
     total_length = len(data['experience'])
-    if index >= 0 and index < total_length:
+    if 0 <= index < total_length:
         return jsonify(data["experience"][index])
     return jsonify("Error: index input can only be 0 to " + str(total_length) + "inclusively")
 
