@@ -42,12 +42,12 @@ class Skill:
     proficiency: str
     logo: str
 
-
+@dataclass
 class Contact:
     '''
     Contact Class
     '''
-    id: int
+    contact_id: int
     name: str
     phone: str
     email: str
@@ -55,7 +55,7 @@ class Contact:
     id_counter = 1
 
     def __init__(self, name, phone, email):
-        self.id = Contact.id_counter
+        self.contact_id = Contact.id_counter
         Contact.id_counter += 1
         self.name = name
         self.phone = phone

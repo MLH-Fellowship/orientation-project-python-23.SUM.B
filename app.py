@@ -125,11 +125,9 @@ def contact():
             if not phone.startswith('+'):
                 phone = '+' + phone
 
-            contact = Contact(name, phone, email)
-            data['contact'] = [contact]
-            
-    return jsonify(data)    
-    
+            _contact = Contact(name, phone, email)
+            data['contact'] = [_contact]
+    return jsonify(data)
 
 
 @app.route('/resume/contact/<int:contact_id>', methods=['PUT'])
@@ -146,11 +144,11 @@ def update_contact(contact_id):
 
         # Get the contact with the given ID
         contact_list = data['contact']
-        contact = [c for c in contact_list if c.id == contact_id][0]
+        _contact = [c for c in contact_list if c.id == contact_id][0]
 
         # Update the contact
-        contact.name = name
-        contact.phone = phone
-        contact.email = email
+        _contact.name = name
+        _contact.phone = phone
+        _contact.email = email
 
     return jsonify(data)
