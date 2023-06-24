@@ -72,3 +72,37 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
+    
+def test_skill_edit():
+    '''
+    Update an existing skill and then get all skills.
+
+    Check that it returns the updated skill in that list
+    '''
+    # Add a new skill
+    response = app.test_client().post('/resume/skill', json={
+        "name": "JavaScript",
+        "proficiency": "2-4 years",
+        "logo": "example-logo.png"
+    })
+    item_id = response.json['id']
+
+    # Update the skill
+    app.test_client().put(f'/resume/skill?index={item_id}', json={
+        "name": "Python",
+        "proficiency": "1 year",
+        "logo": "example-logo.png"
+    })
+
+    # Get all skills
+    response = app.test_client().get('/resume/skill')
+
+    # Check if the updated skill exists in the list
+    assert response.json[item_id] == {
+        "name": "Python",
+        "proficiency": "1 year",
+        "logo": "example-logo.png"
+    }
+
+
+
