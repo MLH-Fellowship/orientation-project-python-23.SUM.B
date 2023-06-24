@@ -15,7 +15,7 @@ def test_client():
 
 def test_experience():
     '''
-    Add a new experience and then get all experiences. 
+    Add a new experience and then get all experiences.
     
     Check that it returns the new experience in that list
     '''
@@ -36,7 +36,7 @@ def test_experience():
 
 def test_education():
     '''
-    Add a new education and then get all educations. 
+    Add a new education and then get all educations.
     
     Check that it returns the new education in that list
     '''
@@ -57,7 +57,7 @@ def test_education():
 
 def test_skill():
     '''
-    Add a new skill and then get all skills. 
+    Add a new skill and then get all skills.
     
     Check that it returns the new skill in that list
     '''
@@ -72,7 +72,7 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
-    
+
 def test_skill_edit():
     '''
     Update an existing skill and then get all skills.
@@ -103,6 +103,3 @@ def test_skill_edit():
         "proficiency": "1 year",
         "logo": "example-logo.png"
     }
-
-
-
