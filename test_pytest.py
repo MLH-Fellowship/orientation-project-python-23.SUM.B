@@ -89,7 +89,7 @@ def test_delete_skill():
     skill_id = response.json["id"]
 
     # Delete the skill
-    delete_response = app.test_client().delete("/resume/skill", json={'id': skill_id})
+    delete_response = app.test_client().delete("/resume/skill", json={"id": skill_id})
     assert delete_response.status_code == 200
     assert delete_response.json["message"] == "Skill deleted successfully"
     assert delete_response.json["deleted_skill"]["name"] == "Java"
@@ -97,3 +97,32 @@ def test_delete_skill():
     # Check if the deleted skill is no longer present
     get_response = app.test_client().get("/resume/skill")
     assert skill_id not in get_response.json
+
+
+def test_delete_experience():
+    """
+    Delete an existing experience by index position
+    """
+    # Add a experience for deletion
+    example_experience = {
+        "title": "Software Developer",
+        "company": "A Cool Company",
+        "start_date": "October 2022",
+        "end_date": "Present",
+        "description": "Writing Python Code",
+        "logo": "example-logo.png",
+    }
+    response = app.test_client().post("/resume/experience", json=example_experience)
+    experience_id = response.json["id"]
+
+    # Delete the experience
+    delete_response = app.test_client().delete(
+        "/resume/experience", json={"id": experience_id}
+    )
+    assert delete_response.status_code == 200
+    assert delete_response.json["message"] == "experience deleted successfully"
+    assert delete_response.json["deleted_experience"]["title"] == "Software Developer"
+
+    # Check if the deleted experience is no longer present
+    get_response = app.test_client().get("/resume/experience")
+    assert experience_id not in get_response.json

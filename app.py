@@ -41,16 +41,29 @@ def hello_world():
     return jsonify({"message": "Hello, World!"})
 
 
-@app.route('/resume/experience', methods=['GET', 'POST'])
+@app.route('/resume/experience', methods=['GET', 'POST', 'DELETE'])
 def experience():
     '''
     Handle experience requests
     '''
     if request.method == 'GET':
-        return jsonify()
+        return jsonify(data["experience"])
 
     if request.method == 'POST':
         return jsonify({})
+
+    if request.method == "DELETE":
+        experience_index = int(request.json.get("id"))
+        if 0 <= experience_index < len(data["experience"]):
+            deleted_experience = data["experience"].pop(experience_index)
+            return jsonify(
+                {
+                    "message": "experience deleted successfully",
+                    "deleted_experience": deleted_experience.__dict__,
+                }
+            )
+
+        return jsonify({"error": "Invalid experience index"})
 
     return jsonify({})
 
