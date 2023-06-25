@@ -55,7 +55,7 @@ def experience():
     return jsonify({})
 
 
-@app.route("/resume/education", methods=["GET", "POST"])
+@app.route("/resume/education", methods=["GET", "POST", "PUT"])
 def education():
     """
     Handles education requests
@@ -65,6 +65,9 @@ def education():
 
     if request.method == "POST":
         return jsonify({})
+
+    if request.method == "PUT":
+        return edit_education()
 
     return jsonify({})
 
@@ -128,3 +131,29 @@ def add_experience():
     data["experience"].append(new_experience)
 
     return jsonify({"id": data["experience"].index(new_experience)})
+
+
+def edit_education():
+    """
+    Edit an education using PUT method.
+    """
+    req = request.get_json()
+    required_fields = [field.name for field in fields(Education)]
+    if req is None or any(field not in req for field in required_fields):
+        return jsonify({"error": "Invalid request data"})
+    index = int(request.args.get("index", -1))
+    if 0 <= index < len(data["education"]):
+        data["education"].pop(index)
+        data["education"].insert(
+            index,
+            {
+                "course": req["course"],
+                "school": req["school"],
+                "start_date": req["start_date"],
+                "end_date": req["end_date"],
+                "grade": req["grade"],
+                "logo": req["logo"],
+            },
+        )
+        return jsonify(data["education"][index])
+    return jsonify({"error": "Couldn't find the specified education"})
