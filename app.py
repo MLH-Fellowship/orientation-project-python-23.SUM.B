@@ -84,7 +84,7 @@ def skill():
 
 def add_skill():
     '''
-     Add a skill using POST method
+     Add a new skill
     '''
     req = request.get_json()
 
