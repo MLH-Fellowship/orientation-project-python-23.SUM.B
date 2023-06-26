@@ -117,7 +117,7 @@ def add_skill():
 
 def add_experience():
     """
-    Add an experience using POST method
+    Add a new experience
     """
     req = request.get_json()
 
@@ -144,7 +144,7 @@ def add_experience():
 
 def edit_education():
     """
-    Edit an education using PUT method.
+    Edit an existing education.
     """
     req = request.get_json()
     required_fields = [field.name for field in fields(Education)]
