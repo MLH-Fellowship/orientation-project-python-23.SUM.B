@@ -54,15 +54,14 @@ def experience():
 
     if request.method == "DELETE":
         experience_index = int(request.json.get("id"))
-        if 0 <= experience_index < len(data["experience"]):
-            deleted_experience = data["experience"].pop(experience_index)
+        deleted_experience = delete_item(data["experience"], experience_index)
+        if deleted_experience:
             return jsonify(
                 {
-                    "message": "experience deleted successfully",
+                    "message": "Experience deleted successfully",
                     "deleted_experience": deleted_experience.__dict__,
                 }
             )
-
         return jsonify({"error": "Invalid experience index"})
 
     return jsonify({})
@@ -94,15 +93,14 @@ def skill():
 
     if request.method == "DELETE":
         skill_index = int(request.json.get("id"))
-        if 0 <= skill_index < len(data["skill"]):
-            deleted_skill = data["skill"].pop(skill_index)
+        deleted_skill = delete_item(data["skill"], skill_index)
+        if deleted_skill:
             return jsonify(
                 {
                     "message": "Skill deleted successfully",
                     "deleted_skill": deleted_skill.__dict__,
                 }
             )
-
         return jsonify({"error": "Invalid skill index"})
 
     return jsonify({})
@@ -126,3 +124,13 @@ def add_skill():
     data["skill"].append(new_skill)
 
     return jsonify({"id": data["skill"].index(new_skill)})
+
+def delete_item(data_list, index):
+    '''
+    Deletes an item from a list based on the given index
+    '''
+    try:
+        deleted_item = data_list.pop(index)
+        return deleted_item
+    except IndexError:
+        return None
