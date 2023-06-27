@@ -28,13 +28,7 @@ data = {
     "skill": [
         Skill("Python",
               "1-2 Years",
-              "example-logo.png"),
-        Skill("C",
-              "3-4 Years",
-              "example-logo.png"),
-        Skill("Java",
-              "2-3 Years",
-              "example-logo.png"),
+              "example-logo.png")
     ]
 }
 
