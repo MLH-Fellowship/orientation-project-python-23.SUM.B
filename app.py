@@ -68,7 +68,7 @@ def education():
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST'])
+@app.route('/resume/skill', methods=['GET', 'POST', 'PUT'])
 def skill():
     '''
     Handles Skill requests
@@ -78,13 +78,15 @@ def skill():
 
     if request.method == 'POST':
         return add_skill()
+    if request.method == 'PUT':
+        return edit_skill()
 
     return jsonify({})
 
 
 def add_skill():
     '''
-     Add a skill using POST method
+     Add a new skill
     '''
     req = request.get_json()
 
@@ -100,3 +102,19 @@ def add_skill():
     data["skill"].append(new_skill)
 
     return jsonify({"id": data["skill"].index(new_skill)})
+
+def edit_skill():
+    '''
+    Edit an existing skill.
+    '''
+    req = request.get_json()
+    required_fields = [field.name for field in fields(Skill)]
+    if req is None or any(field not in req for field in required_fields):
+        return jsonify({"error": "Invalid request data"})
+    index = int(request.args.get("index", -1))
+    if 0 <= index < len(data["skill"]):
+        data["skill"].pop(index)
+        data["skill"].insert(index,{"name": req["name"],"proficiency": req["proficiency"],
+                                    "logo": req["logo"]})
+        return jsonify(data["skill"][index])
+    return jsonify({"error": "Couldn't find the specified skill"})
