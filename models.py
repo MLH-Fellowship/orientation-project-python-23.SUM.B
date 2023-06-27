@@ -41,3 +41,25 @@ class Skill:
     name: str
     proficiency: str
     logo: str
+
+@dataclass
+class Contact:
+    '''
+    Contact Class
+    '''
+    # contact_id: int
+    name: str
+    phone: str
+    email: str
+
+    id_counter = 1
+
+    def __init__(self, name, phone, email):
+        # pylint: disable=W0231
+        # Contact id is disabled for now:
+        # self.contact_id = Contact.id_counter
+        # Contact.id_counter += 1
+
+        self.name = name
+        self.phone = phone
+        self.email = email

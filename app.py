@@ -3,7 +3,7 @@ Flask Application
 '''
 from dataclasses import fields
 from flask import Flask, jsonify, request
-from models import Experience, Education, Skill
+from models import Experience, Education, Skill, Contact
 
 
 app = Flask(__name__)
@@ -29,6 +29,12 @@ data = {
         Skill("Python",
               "1-2 Years",
               "example-logo.png")
+    ],
+
+    "contact": [
+        Contact("John Doe",
+                "+123456789",
+                "johndoe@mail.com")
     ]
 }
 
@@ -106,3 +112,61 @@ def add_skill():
     data["skill"].append(new_skill)
 
     return jsonify({"id": data["skill"].index(new_skill)})
+
+
+@app.route('/resume/contact', methods=['GET', 'POST'])
+def contact():
+    '''
+    Handles Contact requests
+    '''
+    if request.method == 'GET':
+        return jsonify(data)
+
+    if request.method == 'POST':
+        api_data = request.get_json()
+
+        if api_data is not None:
+            name = api_data.get('name')
+            phone = api_data.get('phone')
+            email = api_data.get('email')
+
+            # Ensure phone number starts with +
+            if not phone.startswith('+'):
+                phone = '+' + phone
+
+            _contact = Contact(name, phone, email)
+            data['contact'].append(_contact)
+    return jsonify(data)
+
+
+@app.route('/resume/contact', methods=['PUT'])
+def update_contact():
+    '''
+    Update a contact with the given ID
+    '''
+    api_data = request.get_json()
+    contacts = data['contact']
+
+    if 'old_name' not in api_data:
+        return jsonify({'error': 'Old Name is required'}), 400
+
+    old_name = api_data.get('old_name')
+    contact_index = None
+
+    for index, contact in enumerate(contacts): # pylint: disable=W0621
+        if contact.name == old_name:
+            contact_index = index
+            break
+
+    if contact_index is not None:
+        updated_contact = contacts[contact_index]
+        updated_contact.name = api_data.get('name')
+        updated_contact.email = api_data.get('email')
+
+        if not api_data.get('phone').startswith('+'):
+            updated_contact.phone = '+' + api_data.get('phone')
+
+
+        return jsonify({'message': 'Contact updated successfully',
+                        'Updated contact': updated_contact}), 200
+    return jsonify({'error': 'Contact not found'}), 400
