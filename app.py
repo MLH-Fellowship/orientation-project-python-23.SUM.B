@@ -54,13 +54,25 @@ def experience():
 
     return jsonify({})
 
+
+@app.route('/resume/experience/<int:index>', methods = ['GET'])
+def get_experience(index):
+    '''
+    Handle get request for a single experience
+    '''
+    total_length = len(data['experience'])
+    if 0 <= index < total_length:
+        return jsonify(data["experience"][index])
+    return jsonify("Error: index input can only be 0 to " + str(total_length) + "inclusively")
+
+
 @app.route('/resume/education', methods=['GET', 'POST'])
 def education():
     '''
     Handles education requests
     '''
     if request.method == 'GET':
-        return jsonify({})
+        return jsonify(data['education'])
 
     if request.method == 'POST':
         return jsonify({})
@@ -69,11 +81,17 @@ def education():
 
 
 @app.route('/resume/skill', methods=['GET', 'POST', 'PUT'])
-def skill():
+@app.route('/resume/skill/<index>', methods=['GET', 'POST'])
+def skill(index=None):
     '''
     Handles Skill requests
     '''
     if request.method == 'GET':
+        if index is not None:
+            try:
+                return jsonify(data['skill'][int(index)])
+            except IndexError:
+                return jsonify({'error': f'No skill with index {index} was found'})
         return jsonify(data["skill"])
 
     if request.method == 'POST':

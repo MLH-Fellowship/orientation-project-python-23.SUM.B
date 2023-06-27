@@ -64,10 +64,10 @@ def test_skill():
         "logo": "example-logo.png"
     }
 
-    item_id = app.test_client().post('/resume/skill',
+    item_id = app.test_client().post('/resume/skill/',
                                      json=example_skill).json['id']
 
-    response = app.test_client().get('/resume/skill')
+    response = app.test_client().get('/resume/skill/')
     assert response.json[item_id] == example_skill
 
 
