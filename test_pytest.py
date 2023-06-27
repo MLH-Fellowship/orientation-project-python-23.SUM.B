@@ -104,6 +104,7 @@ def test_contact_update():
         "phone": "1234567890",
         "email": "johndoe@gmail.com"}
     update_contact = {
+        "old_name": "John Doe",
         "name": "Jane Doe",
         "phone": "0987654321",
         "email": "johndoer@yahoo.com"}
@@ -111,7 +112,19 @@ def test_contact_update():
     post_response = app.test_client().post('/resume/contact', json=example_contact)
     assert post_response.status_code == 200
 
-    item_id = list(post_response.json['contact'])[0]['id']
 
-    put_response = app.test_client().put(f'/resume/contact/{item_id}', json=update_contact)
+    put_response = app.test_client().put('/resume/contact', json=update_contact)
     assert put_response.status_code == 200
+
+    get_response = app.test_client().get('/resume/contact')
+
+
+    # Check that the response is the same as the updated contact
+    contact_index = None
+    contact_index = [index for index, contact in enumerate(get_response.json["contact"])
+                     if contact["name"] == update_contact["name"]][0]
+
+    del update_contact["old_name"]
+    update_contact["phone"] = "+" + update_contact["phone"]
+
+    assert get_response.json["contact"][contact_index] == update_contact
