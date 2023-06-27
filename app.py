@@ -32,6 +32,9 @@ data = {
     ],
 
     "contact": [
+        Contact("John Doe",
+                "+123456789",
+                "johndoe@mail.com")
     ]
 }
 
@@ -126,29 +129,38 @@ def contact():
                 phone = '+' + phone
 
             _contact = Contact(name, phone, email)
-            data['contact'] = [_contact]
+            data['contact'].append(_contact)
     return jsonify(data)
 
 
-@app.route('/resume/contact/<int:contact_id>', methods=['PUT'])
-def update_contact(contact_id):
+@app.route('/resume/contact', methods=['PUT'])
+def update_contact():
     '''
     Update a contact with the given ID
     '''
     api_data = request.get_json()
+    contacts = data['contact']
 
-    if api_data is not None:
-        name = api_data.get('name')
-        phone = api_data.get('phone')
-        email = api_data.get('email')
+    if 'old_name' not in api_data:
+        return jsonify({'error': 'Old Name is required'}), 400
 
-        # Get the contact with the given ID
-        contact_list = data['contact']
-        _contact = [c for c in contact_list if c.id == contact_id][0]
+    old_name = api_data.get('old_name')
+    contact_index = None
 
-        # Update the contact
-        _contact.name = name
-        _contact.phone = phone
-        _contact.email = email
+    for index, contact in enumerate(contacts): # pylint: disable=W0621
+        if contact.name == old_name:
+            contact_index = index
+            break
 
-    return jsonify(data)
+    if contact_index is not None:
+        updated_contact = contacts[contact_index]
+        updated_contact.name = api_data.get('name')
+        updated_contact.email = api_data.get('email')
+
+        if not api_data.get('phone').startswith('+'):
+            updated_contact.phone = '+' + api_data.get('phone')
+
+
+        return jsonify({'message': 'Contact updated successfully',
+                        'Updated contact': updated_contact}), 200
+    return jsonify({'error': 'Contact not found'}), 400
