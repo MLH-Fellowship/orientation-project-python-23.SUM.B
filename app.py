@@ -37,6 +37,13 @@ data = {
 def hello_world():
     """
     Returns a JSON test message
+
+    Parameters:
+    None
+
+    Returns:
+    - A JSON response containing a test message.
+
     """
     return jsonify({"message": "Hello, World!"})
 
@@ -44,8 +51,15 @@ def hello_world():
 @app.route("/resume/experience", methods=["GET", "POST"])
 def experience():
     """
-    Handle experience requests
-    """
+    Handle experience requests.
+
+    Parameters:
+    None
+
+    Returns:
+    - If the request method is GET, returns a JSON response containing the experience data.
+    - If the request method is POST, calls the add_experience() function and returns the result.
+    - If the request method is neither GET nor POST, returns an empty JSON response."""
     if request.method == "GET":
         return jsonify(data["experience"])
 
@@ -58,7 +72,16 @@ def experience():
 @app.route("/resume/education", methods=["GET", "POST", "PUT"])
 def education():
     """
-    Handles education requests
+    Handle education requests.
+
+    Parameters:
+    None
+
+    Returns:
+    - If the request method is GET, returns an empty JSON response.
+    - If the request method is POST, returns an empty JSON response.
+    - If the request method is PUT, calls the edit_education() function and returns the result.
+    - If the request method is neither GET, POST, nor PUT, returns an empty JSON response.
     """
     if request.method == "GET":
         return jsonify({})
@@ -75,7 +98,14 @@ def education():
 @app.route("/resume/education/<int:index>", methods=["GET"])
 def get_education(index):
     """
-    Handle get request for a single experience
+    Handle GET request for a single education entry.
+
+    Parameters:
+    - index (int): The index of the education entry to retrieve.
+
+    Returns:
+    - If the index is valid, returns a JSON response containing the requested education entry.
+    - If the index is out of range or invalid, returns an empty JSON response.
     """
     edu = data["education"][index]
     return jsonify(edu)
@@ -84,7 +114,15 @@ def get_education(index):
 @app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
     """
-    Handles skill requests
+    Handle skill requests.
+
+    Parameters:
+    None
+
+    Returns:
+    - If the request method is GET, returns a JSON response containing the skill data.
+    - If the request method is POST, calls the add_skill() function and returns the result.
+    - If the request method is neither GET nor POST, returns an empty JSON response.
     """
     if request.method == "GET":
         return jsonify(data["skill"])
@@ -97,7 +135,17 @@ def skill():
 
 def add_skill():
     """
-    Add a skill using POST method
+    Add a skill using the POST method.
+
+    Parameters:
+    None (reads request data from the request body)
+
+    Returns:
+    - If all required fields are provided in the request JSON data, adds the skill to the data store
+      and returns a JSON response with the ID of the added skill.
+    - If any required field is missing in the request JSON data,
+    returns a JSON response with an error message
+      indicating the missing fields and a 400 status code.
     """
     req = request.get_json()
 
@@ -117,7 +165,18 @@ def add_skill():
 
 def add_experience():
     """
-    Add a new experience
+    Add a new experience using the POST method.
+
+    Parameters:
+    None (reads request data from the request body)
+
+    Returns:
+    - If all required fields are provided in the request JSON data,
+      adds the experience to the data store
+      and returns a JSON response with the ID of the added experience.
+    - If any required field is missing in the request JSON data,
+    returns a JSON response with an error message
+      indicating the missing fields and a 400 status code.
     """
     req = request.get_json()
 
@@ -144,7 +203,17 @@ def add_experience():
 
 def edit_education():
     """
-    Edit an existing education.
+    Edit an existing education using the PUT method.
+
+    Parameters:
+    None (reads request data from the request body)
+
+    Returns:
+    - If the request data is valid and the specified education index exists,
+    edits the education entry in the data store
+      and returns a JSON response with the updated education entry.
+    - If the request data is invalid or the specified education index doesn't exist,
+    returns a JSON response with an error message.
     """
     req = request.get_json()
     required_fields = [field.name for field in fields(Education)]
