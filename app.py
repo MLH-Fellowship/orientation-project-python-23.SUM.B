@@ -55,14 +55,25 @@ def experience():
     return jsonify({})
 
 
+@app.route('/resume/experience/<int:index>', methods = ['GET'])
+def get_experience(index):
+    '''
+    Handle get request for a single experience
+    '''
+    total_length = len(data['experience'])
+    if 0 <= index < total_length:
+        return jsonify(data["experience"][index])
+    return jsonify("Error: index input can only be 0 to " + str(total_length) + "inclusively")
+
+
 @app.route("/resume/education", methods=["GET", "POST", "PUT"])
 def education():
     """
     Handles education requests
     """
-    if request.method == "GET":
-        return jsonify({})
-
+    if request.method == 'GET':
+        return jsonify(data['education'])
+      
     if request.method == "POST":
         return jsonify({})
 
@@ -72,24 +83,39 @@ def education():
     return jsonify({})
 
 
-@app.route("/resume/skill", methods=["GET", "POST"])
-def skill():
-    """
-    Handles skill requests
-    """
-    if request.method == "GET":
-        return jsonify(data["skill"])
 
+@app.route('/resume/skill', methods=['GET', 'POST', 'PUT'])
+def skill():
+    if request.method == 'GET':
+      return jsonify(data["skill"])
     if request.method == "POST":
         return add_skill()
+    if request.method == 'PUT':
+        return edit_skill()
 
     return jsonify({})
+  
+  
+@app.route('/resume/skill/<index>', methods=['GET', 'POST'])
+def skill(index=None):
+    '''
+    Handles Skill requests
+    '''
+    if request.method == 'GET':
+        if index is not None:
+            try:
+                return jsonify(data['skill'][int(index)])
+            except IndexError:
+                return jsonify({'error': f'No skill with index {index} was found'})
+        
+
+
 
 
 def add_skill():
-    """
-    Add a skill using POST method
-    """
+    '''
+     Add a new skill
+    '''
     req = request.get_json()
 
     required_fields = [field.name for field in fields(Skill)]
@@ -157,3 +183,19 @@ def edit_education():
         )
         return jsonify(data["education"][index])
     return jsonify({"error": "Couldn't find the specified education"})
+  
+def edit_skill():
+    '''
+    Edit an existing skill.
+    '''
+    req = request.get_json()
+    required_fields = [field.name for field in fields(Skill)]
+    if req is None or any(field not in req for field in required_fields):
+        return jsonify({"error": "Invalid request data"})
+    index = int(request.args.get("index", -1))
+    if 0 <= index < len(data["skill"]):
+        data["skill"].pop(index)
+        data["skill"].insert(index,{"name": req["name"],"proficiency": req["proficiency"],
+                                    "logo": req["logo"]})
+        return jsonify(data["skill"][index])
+    return jsonify({"error": "Couldn't find the specified skill"})
