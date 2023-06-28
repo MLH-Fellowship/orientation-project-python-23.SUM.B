@@ -72,10 +72,10 @@ def education():
     Handles education requests
     '''
     if request.method == 'GET':
-        return jsonify(data['education'])
+        return jsonify(data["education"])
 
     if request.method == 'POST':
-        return jsonify({})
+        return add_education()
 
     return jsonify({})
 
@@ -136,3 +136,22 @@ def edit_skill():
                                     "logo": req["logo"]})
         return jsonify(data["skill"][index])
     return jsonify({"error": "Couldn't find the specified skill"})
+
+def add_education():
+    '''
+    Add education using POST method
+    '''
+    req = request.get_json()
+
+    required_fields = [field.name for field in fields(Education)]
+
+    missing_fields = [field for field in required_fields if field not in req]
+
+    if missing_fields:
+        error_message = "Missing required field(s): " + ", ".join(missing_fields)
+        return jsonify({"error": error_message}), 400
+
+    new_education = Education(req["course"], req["school"], req["start_date"], req["end_date"], req["grade"], req["logo"])
+    data["education"].append(new_education)
+
+    return jsonify({"id": data["education"].index(new_education)})
