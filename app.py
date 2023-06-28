@@ -147,8 +147,8 @@ def update_contact():
     old_name = api_data.get('old_name')
     contact_index = None
 
-    for index, contact in enumerate(contacts): # pylint: disable=W0621
-        if contact.name == old_name:
+    for index, current_contact in enumerate(contacts):
+        if current_contact.name == old_name:
             contact_index = index
             break
 
