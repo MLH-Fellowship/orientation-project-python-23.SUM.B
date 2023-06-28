@@ -80,6 +80,19 @@ def education():
     return jsonify({})
 
 
+@app.route('/resume/education/<int:index>', methods=['DELETE'])
+def delete_education(index):
+    '''
+    Handles education delete requests by index
+    '''
+    total_length = len(data['education'])
+    if 0 <= index < total_length:
+        data['education'].pop(index)
+        return jsonify({"message": "Successfully deleted"})
+
+    return jsonify({"message": "Error: failed to delete"})
+
+
 @app.route('/resume/skill', methods=['GET', 'POST', 'PUT'])
 @app.route('/resume/skill/<index>', methods=['GET', 'POST'])
 def skill(index=None):
