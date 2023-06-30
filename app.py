@@ -66,13 +66,25 @@ def experience():
 
     return jsonify({})
 
+
+@app.route('/resume/experience/<int:index>', methods = ['GET'])
+def get_experience(index):
+    '''
+    Handle get request for a single experience
+    '''
+    total_length = len(data['experience'])
+    if 0 <= index < total_length:
+        return jsonify(data["experience"][index])
+    return jsonify("Error: index input can only be 0 to " + str(total_length) + "inclusively")
+
+
 @app.route('/resume/education', methods=['GET', 'POST'])
 def education():
     '''
     Handles education requests
     '''
     if request.method == 'GET':
-        return jsonify({})
+        return jsonify(data['education'])
 
     if request.method == 'POST':
         return jsonify({})
@@ -80,16 +92,25 @@ def education():
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST', 'DELETE'])
-def skill():
+@app.route('/resume/skill', methods=['GET', 'POST', 'PUT','DELETE'])
+@app.route('/resume/skill/<index>', methods=['GET', 'POST'])
+def skill(index=None):
+
     '''
     Handles Skill requests
     '''
     if request.method == 'GET':
+        if index is not None:
+            try:
+                return jsonify(data['skill'][int(index)])
+            except IndexError:
+                return jsonify({'error': f'No skill with index {index} was found'})
         return jsonify(data["skill"])
 
     if request.method == 'POST':
         return add_skill()
+    if request.method == 'PUT':
+        return edit_skill()
 
     if request.method == "DELETE":
         skill_index = int(request.json.get("id"))
@@ -108,7 +129,7 @@ def skill():
 
 def add_skill():
     '''
-     Add a skill using POST method
+     Add a new skill
     '''
     req = request.get_json()
 
@@ -125,6 +146,7 @@ def add_skill():
 
     return jsonify({"id": data["skill"].index(new_skill)})
 
+
 def delete_item(data_list, index):
     '''
     Deletes an item from a list based on the given index
@@ -134,3 +156,20 @@ def delete_item(data_list, index):
         return deleted_item
     except IndexError:
         return None
+
+def edit_skill():
+    '''
+    Edit an existing skill.
+    '''
+    req = request.get_json()
+    required_fields = [field.name for field in fields(Skill)]
+    if req is None or any(field not in req for field in required_fields):
+        return jsonify({"error": "Invalid request data"})
+    index = int(request.args.get("index", -1))
+    if 0 <= index < len(data["skill"]):
+        data["skill"].pop(index)
+        data["skill"].insert(index,{"name": req["name"],"proficiency": req["proficiency"],
+                                    "logo": req["logo"]})
+        return jsonify(data["skill"][index])
+    return jsonify({"error": "Couldn't find the specified skill"})
+
