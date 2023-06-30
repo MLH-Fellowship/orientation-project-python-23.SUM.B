@@ -1,6 +1,6 @@
-'''
+"""
 Flask Application
-'''
+"""
 from dataclasses import fields
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
@@ -10,46 +10,46 @@ app = Flask(__name__)
 
 data = {
     "experience": [
-        Experience("Software Developer",
-                   "A Cool Company",
-                   "October 2022",
-                   "Present",
-                   "Writing Python Code",
-                   "example-logo.png")
+        Experience(
+            "Software Developer",
+            "A Cool Company",
+            "October 2022",
+            "Present",
+            "Writing Python Code",
+            "example-logo.png",
+        )
     ],
     "education": [
-        Education("Computer Science",
-                  "University of Tech",
-                  "September 2019",
-                  "July 2022",
-                  "80%",
-                  "example-logo.png")
+        Education(
+            "Computer Science",
+            "University of Tech",
+            "September 2019",
+            "July 2022",
+            "80%",
+            "example-logo.png",
+        )
     ],
-    "skill": [
-        Skill("Python",
-              "1-2 Years",
-              "example-logo.png")
-    ]
+    "skill": [Skill("Python", "1-2 Years", "example-logo.png")],
 }
 
 
-@app.route('/test')
+@app.route("/test")
 def hello_world():
-    '''
+    """
     Returns a JSON test message
-    '''
+    """
     return jsonify({"message": "Hello, World!"})
 
 
-@app.route('/resume/experience', methods=['GET', 'POST', 'DELETE'])
+@app.route("/resume/experience", methods=["GET", "POST", "DELETE"])
 def experience():
-    '''
+    """
     Handle experience requests
-    '''
-    if request.method == 'GET':
+    """
+    if request.method == "GET":
         return jsonify(data["experience"])
 
-    if request.method == 'POST':
+    if request.method == "POST":
         return jsonify({})
 
     if request.method == "DELETE":
@@ -67,49 +67,50 @@ def experience():
     return jsonify({})
 
 
-@app.route('/resume/experience/<int:index>', methods = ['GET'])
+@app.route("/resume/experience/<int:index>", methods=["GET"])
 def get_experience(index):
-    '''
+    """
     Handle get request for a single experience
-    '''
-    total_length = len(data['experience'])
+    """
+    total_length = len(data["experience"])
     if 0 <= index < total_length:
         return jsonify(data["experience"][index])
-    return jsonify("Error: index input can only be 0 to " + str(total_length) + "inclusively")
+    return jsonify(
+        "Error: index input can only be 0 to " + str(total_length) + "inclusively"
+    )
 
 
-@app.route('/resume/education', methods=['GET', 'POST'])
+@app.route("/resume/education", methods=["GET", "POST"])
 def education():
-    '''
+    """
     Handles education requests
-    '''
-    if request.method == 'GET':
-        return jsonify(data['education'])
+    """
+    if request.method == "GET":
+        return jsonify(data["education"])
 
-    if request.method == 'POST':
+    if request.method == "POST":
         return jsonify({})
 
     return jsonify({})
 
 
-@app.route('/resume/skill', methods=['GET', 'POST', 'PUT','DELETE'])
-@app.route('/resume/skill/<index>', methods=['GET', 'POST'])
+@app.route("/resume/skill", methods=["GET", "POST", "PUT", "DELETE"])
+@app.route("/resume/skill/<index>", methods=["GET", "POST"])
 def skill(index=None):
-
-    '''
+    """
     Handles Skill requests
-    '''
-    if request.method == 'GET':
+    """
+    if request.method == "GET":
         if index is not None:
             try:
-                return jsonify(data['skill'][int(index)])
+                return jsonify(data["skill"][int(index)])
             except IndexError:
-                return jsonify({'error': f'No skill with index {index} was found'})
+                return jsonify({"error": f"No skill with index {index} was found"})
         return jsonify(data["skill"])
 
-    if request.method == 'POST':
+    if request.method == "POST":
         return add_skill()
-    if request.method == 'PUT':
+    if request.method == "PUT":
         return edit_skill()
 
     if request.method == "DELETE":
@@ -128,9 +129,9 @@ def skill(index=None):
 
 
 def add_skill():
-    '''
-     Add a new skill
-    '''
+    """
+    Add a new skill
+    """
     req = request.get_json()
 
     required_fields = [field.name for field in fields(Skill)]
@@ -148,19 +149,20 @@ def add_skill():
 
 
 def delete_item(data_list, index):
-    '''
+    """
     Deletes an item from a list based on the given index
-    '''
+    """
     try:
         deleted_item = data_list.pop(index)
         return deleted_item
     except IndexError:
         return None
 
+
 def edit_skill():
-    '''
+    """
     Edit an existing skill.
-    '''
+    """
     req = request.get_json()
     required_fields = [field.name for field in fields(Skill)]
     if req is None or any(field not in req for field in required_fields):
@@ -168,8 +170,13 @@ def edit_skill():
     index = int(request.args.get("index", -1))
     if 0 <= index < len(data["skill"]):
         data["skill"].pop(index)
-        data["skill"].insert(index,{"name": req["name"],"proficiency": req["proficiency"],
-                                    "logo": req["logo"]})
+        data["skill"].insert(
+            index,
+            {
+                "name": req["name"],
+                "proficiency": req["proficiency"],
+                "logo": req["logo"],
+            },
+        )
         return jsonify(data["skill"][index])
     return jsonify({"error": "Couldn't find the specified skill"})
-
