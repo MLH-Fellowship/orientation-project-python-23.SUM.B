@@ -123,7 +123,6 @@ def get_education(index):
     return jsonify(edu)
 
 
-
 @app.route("/resume/skill", methods=["GET", "POST", "PUT"])
 def get_skill():
     """
