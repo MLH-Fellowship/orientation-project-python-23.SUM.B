@@ -1,7 +1,6 @@
 """
    Flask Application
 """
-from dataclasses import fields
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
 
@@ -54,7 +53,6 @@ def experience():
     return jsonify({})
 
 
-
 @app.route("/resume/education", methods=["GET", "POST", "PUT"])
 def education():
     """
@@ -65,7 +63,7 @@ def education():
     if request.method == "POST":
         return jsonify({})
     if request.method == "PUT":
-        return edit_education()
+        return jsonify({})
     return jsonify({})
 
 
@@ -76,14 +74,3 @@ def get_education(index):
     """
     edu = data["education"][index]
     return jsonify(edu)
-
-
-
-
-
-
-
-
-
-
-
