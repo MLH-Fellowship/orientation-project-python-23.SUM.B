@@ -53,7 +53,8 @@ def experience():
 
     return jsonify({})
 
-@app.route('/resume/experience/<int:index>', methods = ['GET'])
+
+@app.route("/resume/experience/<int:index>", methods=["GET"])
 def get_experience(index):
     """
     Handle get request for a single experience
@@ -71,15 +72,13 @@ def education():
     """
     Handles education requests
     """
-    if request.method == 'GET':
-        return jsonify(data['education'])
+    if request.method == "GET":
+        return jsonify(data["education"])
     if request.method == "POST":
         return jsonify({})
     if request.method == "PUT":
-        return edit_education()
+        return jsonify({})
     return jsonify({})
-
-
 
 
 @app.route("/resume/skill/<index>", methods=["GET", "POST"])
@@ -92,13 +91,13 @@ def skill(index=None):
             try:
                 return jsonify(data["skill"][int(index)])
             except IndexError:
-                return jsonify({'error': f'No skill with index {index} was found'})
+                return jsonify({"error": f"No skill with index {index} was found"})
 
         return jsonify(data["skill"])
 
     if request.method == "POST":
         return add_skill()
-    if request.method == 'PUT':
+    if request.method == "PUT":
         return edit_skill()
     return jsonify({})
 
